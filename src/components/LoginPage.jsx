@@ -73,9 +73,12 @@ export default function LoginPage({ onLogin, onForgotPassword, onCreateAccount }
             value={password} onChange={(e) => setPassword(e.target.value)} />
 
           <button type="button" className="login-link login-forgot"
-            onClick={() => run(onForgotPassword, undefined, "Password reset is not connected yet.")}>
-            Forgot Password?
-          </button>
+                onClick={() => {
+                    if (!idNumber.trim()) return setMessage("Enter your ID number first.");
+                    run(onForgotPassword, idNumber.trim(), "Password reset is not connected yet.");
+                }}>
+                Forgot Password?
+            </button>
 
           <p className="login-message" role="alert">{message}</p>
 
