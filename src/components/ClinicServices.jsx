@@ -143,7 +143,8 @@ function Checklist({ items, checked, onToggle }) {
   );
 }
 
-export default function ClinicServices() {
+export default function ClinicServices({ onBook }) {
+  const [notice, setNotice] = useState("");
   const [{ index, direction }, setTab] = useState({ index: 0, direction: 1 });
   const [group, setGroup] = useState(0);
   const [ticks, setTicks] = useState({});
@@ -159,7 +160,16 @@ export default function ClinicServices() {
   const toggle = (item) => setTicks({ ...ticks, [listId]: { ...checked, [item]: !checked[item] } });
 
   const choose = (next) => {
-    if (next !== index) setTab({ index: next, direction: next > index ? 1 : -1 });
+    if (next !== index) {
+      setTab({ index: next, direction: next > index ? 1 : -1 });
+      setNotice("");
+    }
+  };
+
+  // Pass an onBook function to this component to open your booking page.
+  const book = () => {
+    if (onBook) onBook(service.id);
+    else setNotice(`Online booking for ${service.name} is not connected yet.`);
   };
 
   const facts = [
@@ -183,6 +193,19 @@ export default function ClinicServices() {
           </button>
         ))}
       </div>
+
+      {/* Slides underneath whichever service is selected. */}
+      <div className="cs-book-track">
+        <div className="cs-book-slot" style={{ transform: `translateX(${index * 100}%)` }}>
+          <button type="button" className="cs-book" onClick={book} aria-label={`Book now: ${service.name}`}>
+            Book now
+          </button>
+        </div>
+      </div>
+      {service.id === "emergency" && (
+        <p className="cs-urgent">In an emergency, don't wait to book. Go straight to the clinic.</p>
+      )}
+      <p className="cs-notice" role="status">{notice}</p>
 
       {/* The key restarts the animation each time another service is chosen. */}
       <article className="cs-panel" key={service.id} style={{ "--from": `${direction * 32}px` }}>
@@ -272,7 +295,15 @@ const css = `
 .lp .cs-tabs button:hover .cs-tab-icon { transform: translateY(-3px); }
 .lp .cs-tabs button[aria-pressed="true"] .cs-tab-icon { animation: cs-pop .45s ease; }
 
-.lp .cs-panel { margin-top: 16px; padding: clamp(16px, 3vw, 28px); border: 1px solid #dde6f1; border-radius: 18px; animation: cs-in .4s ease both; }
+.lp .cs-book-track { overflow: hidden; margin-top: 6px; padding: 0 5px 8px; }
+.lp .cs-book-slot { display: flex; justify-content: center; width: 25%; transition: transform .4s cubic-bezier(.3, 1.3, .5, 1); }
+.lp .cs-book { position: relative; margin-top: 8px; padding: 8px 22px; border: 0; border-radius: 30px; background: #0b72e7; color: #fff; font-size: .85rem; font-weight: 600; white-space: nowrap; }
+.lp .cs-book::before { content: ""; position: absolute; top: -6px; left: 50%; translate: -50% 0; border: 6px solid transparent; border-top: 0; border-bottom-color: #0b72e7; }
+.lp .cs-book:hover { background: #085fc2; }
+.lp .cs-book:hover::before { border-bottom-color: #085fc2; }
+.lp .cs .cs-urgent { margin: 0; color: #a3261b; font-size: .82rem; font-weight: 600; text-align: center; }
+.lp .cs .cs-notice { margin: 0; color: #55606e; font-size: .82rem; text-align: center; }
+.lp .cs-panel { margin-top: 12px; padding: clamp(16px, 3vw, 28px); border: 1px solid #dde6f1; border-radius: 18px; animation: cs-in .4s ease both; }
 .lp .cs-head { display: flex; align-items: center; gap: 14px; }
 .lp .cs-big { flex: 0 0 56px; height: 56px; display: grid; place-items: center; border: 1px solid #dde6f1; border-radius: 50%; color: #0b72e7; }
 .lp .cs-head h3 { margin: 0; font-size: 1.3rem; }
@@ -313,11 +344,12 @@ const css = `
 @keyframes cs-pop { 50% { transform: scale(1.3); } }
 @media (max-width: 760px) {
   .lp .cs-tabs button { font-size: .68rem; }
+  .lp .cs-book { padding: 7px 10px; font-size: .7rem; }
   .lp .cs-facts { grid-template-columns: 1fr; }
   .lp .cs-body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "main"; }
 }
 @media (prefers-reduced-motion: reduce) {
   .lp .cs-panel, .lp .cs-steps li, .lp .cs-tabs button[aria-pressed="true"] .cs-tab-icon { animation: none; }
-  .lp .cs-slider, .lp .cs-progress span, .lp .cs-tab-icon { transition: none; }
+  .lp .cs-book-slot, .lp .cs-slider, .lp .cs-progress span, .lp .cs-tab-icon { transition: none; }
 }
 `;

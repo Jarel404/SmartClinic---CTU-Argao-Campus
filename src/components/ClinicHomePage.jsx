@@ -3,6 +3,7 @@ import headerLogo from "../assets/CTU Logo.png";
 import ClinicInfo from "./ClinicInfo";
 import PriorityLane from "./PriorityLane";
 import ClinicServices from "./ClinicServices";
+import CampusFooter from "./CampusFooter";
 
 const slideFiles = import.meta.glob("../assets/{first,second,third}.png", { eager: true, import: "default" });
 const logoFiles = import.meta.glob("../assets/logo.png", { eager: true, import: "default" });
@@ -196,21 +197,9 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer id="contact">
-        <div className="wrap foot">
-          <div>
-            <h2>Cebu Technological University, Argao Campus</h2>
-            <p>Ed Kintanar Street, Lamacan, Argao, Cebu, Philippines</p>
-            <p><a href="http://www.argao.ctu.edu.ph" target="_blank" rel="noreferrer">www.argao.ctu.edu.ph</a></p>
-          </div>
-          <div>
-            <p>Phone: (032) 485-8290 / 485-1109 loc. 1702</p>
-            <p>Fax: (032) 485-8290</p>
-            <p>Email: <a href="mailto:ctu.argao@yahoo.com">ctu.argao@yahoo.com</a></p>
-          </div>
-        </div>
-        <p className="wrap copy">SmartClinic: a digital clinic management system</p>
-      </footer>
+     
+        <CampusFooter />
+      
     </div>
   );
 }
